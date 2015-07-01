@@ -1,0 +1,84 @@
+#!/bin/bash
+workdir=$(cd $(dirname $0)/; pwd)
+homedir=$1
+action=$2
+
+## help
+function help(){
+    echo -e "initsys homedir action, action:initall|initenv|initvim|mkdirs"
+}
+
+if [ "X$homedir" == "X" -o "X$action" == "X" ]; then
+    help
+    exit 1
+fi
+echo "workdir: $workdir"
+echo "homedir: $homedir"
+
+## top dirs
+builddir=$homedir/build
+installdir=$homedir/install
+codedir=$homedir/code
+datadir=$homedir/data
+
+function mkdir_if_notexit(){
+    dir=$1
+    [ ! -d $dir ] && { mkdir -p $dir; echo -e "mkdir $dir"; }
+}
+
+function mkdirs(){
+    mkdir_if_notexit $builddir
+    mkdir_if_notexit $installdir
+    mkdir_if_notexit $codedir
+    mkdir_if_notexit $datadir
+    echo -e "mkdirs done"
+}
+
+## env(bashrc, aliases...)
+bashrc=$workdir/bashrc.cfg
+bashprofile=$workdir/bash_profile.cfg
+bashalias=$workdir/bash_aliases.cfg
+tbashrc=$homedir/.bashrc
+tbashprofile=$homedir/.bash_profile
+tbashalias=$homedir/.bash_aliases
+
+function init_env_config(){
+    src=$1
+    target=$2
+    [ -f $target ] && rm -rf $target
+    cp -r $src $target && echo -e "init config $target" || { echo -e "init config $target, error"; exit 1; }
+}
+function initenv(){
+    init_env_config $bashrc $tbashrc &&
+    init_env_config $bashprofile $tbashprofile &&
+    init_env_config $bashalias $tbashalias &&
+    { echo -e "initenv ok"; } || { echo -e "initenv error"; exit 1; }
+}
+
+## vim
+vimrc=$workdir/vimrc.cfg
+tvimrc=$homedir/.vimrc
+
+function initvim(){
+    init_env_config $vimrc $tvimrc &&
+    { echo -e "initvim ok"; } || { echo -e "initvim error"; exit 1; }
+}
+
+##
+case $action in
+    "initall")
+    initenv && initvim && mkdirs && echo -e "\ninstall done"
+    ;;
+    "initenv")
+    initenv
+    ;;
+    "initvim")
+    initvim
+    ;;
+    "mkdirs")
+    mkdirs
+    ;;
+    *)
+    help
+    ;;
+esac
