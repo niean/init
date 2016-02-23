@@ -1,11 +1,10 @@
 #!/bin/bash
-userhome=$1
-username=$2
+username=$1
+userhome=$2
 password=$3
 
 if [ "X$password" == "X" ];then
     password="abc123"
 fi
 
-useradd -s /bin/bash -d $userhome -m $username &&\
-( echo $password; echo $password ) | passwd --stdin $username
+useradd -s /bin/bash -d $userhome -m $username && echo "$username:$password" | chpasswd

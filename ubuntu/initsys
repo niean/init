@@ -1,7 +1,7 @@
 #!/bin/bash
 workdir=$(cd $(dirname $0)/; pwd)
-homedir=$1
-action=$2
+action=$1
+homedir=$2
 
 ## help
 function help(){
@@ -15,7 +15,7 @@ fi
 echo "workdir: $workdir"
 echo "homedir: $homedir"
 
-## top dirs
+## dirs
 builddir=$homedir/build
 installdir=$homedir/install
 codedir=$homedir/code
@@ -34,7 +34,7 @@ function mkdirs(){
     echo -e "mkdirs done"
 }
 
-## env(bashrc, aliases...)
+## env
 bashrc=$workdir/bashrc.cfg
 bashprofile=$workdir/bash_profile.cfg
 bashalias=$workdir/bash_aliases.cfg
@@ -64,7 +64,7 @@ function initvim(){
     { echo -e "initvim ok"; } || { echo -e "initvim error"; exit 1; }
 }
 
-##
+## main
 case $action in
     "initall")
     initenv && initvim && mkdirs && echo -e "\ninstall done"
