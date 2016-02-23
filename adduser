@@ -8,3 +8,4 @@ if [ "X$password" == "X" ];then
 fi
 
 useradd -s /bin/bash -d $userhome -m $username && echo "$username:$password" | chpasswd
+
